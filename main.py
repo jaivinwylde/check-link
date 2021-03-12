@@ -6,20 +6,21 @@ import os
 
 from selenium import webdriver
 
-link = input("link: ")
+print("READY\n")
+link = input("link (ctrl+shift+v to paste): ")
+
+print("\nloading...")
 
 options = webdriver.FirefoxOptions()
 options.headless = True
 driver = webdriver.Firefox(options=options)
-
-print("\nloading...")
 
 # get root
 root = "/".join(link.split("/")[:-1])
 driver.get(root)
 time.sleep(1)
 
-print(f"\ngoes to {driver.current_url}")
+print(f"\nroot is {driver.current_url}")
 time.sleep(2)
 screenshot = driver.save_screenshot("root.png")
 print("screenshot: root.png")
