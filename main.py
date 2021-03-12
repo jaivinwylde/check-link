@@ -2,7 +2,6 @@
 
 # link checker - jaivin wylde - 12/03/21
 import time
-import os
 
 from selenium import webdriver
 
@@ -12,11 +11,13 @@ link = input("link (ctrl+shift+v to paste): ")
 print("\nloading...")
 
 options = webdriver.FirefoxOptions()
-options.headless = True
 driver = webdriver.Firefox(options=options)
 
 # get root
-root = "/".join(link.split("/")[:-1])
+root = link.split(".")
+root[1] = root[1].split("/")[0]
+root = ".".join(root)
+
 driver.get(root)
 time.sleep(1)
 
@@ -39,4 +40,4 @@ if driver.current_url != link:
 driver.quit()
 print("\ndone")
 
-input("click on 'code' tab to see screenshots")
+print("click on 'code' tab to see screenshots")
