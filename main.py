@@ -5,8 +5,6 @@ import time
 
 from selenium import webdriver
 
-print("READY\nTHERE MAY BE A BUNCH OF ERRORS WHEN RUNNING IN REPL BUT JUST "
-      "WAIT UNTIL IT STOPS RUNNING IT WILL BE FINE\n")
 link = input("link (ctrl+shift+v to paste): ")
 
 print("\nloading...")
