@@ -1,3 +1,6 @@
-# Todo
-- [x] show where the link redirects to
-- [x] show a screenshot of the sites (destination, and root)
+# Check link
+Investigates a link and takes screenshots of everything it finds. Good for
+safely checking shady links.
+
+### How to safely run it
+Use it from this (repl.it)[https://repl.it/@JaivinWylde/check-link]
