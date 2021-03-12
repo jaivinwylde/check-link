@@ -16,9 +16,9 @@ driver = webdriver.Firefox(options=options)
 # get root
 root = link.split(".")
 root[-1] = root[-1].split("/")[0]
-root = ".".join(root)
+root_url = ".".join(root)
 
-driver.get(root)
+driver.get(root_url)
 
 print(f"\nroot is {driver.current_url}")
 time.sleep(2)
