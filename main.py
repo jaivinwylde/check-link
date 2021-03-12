@@ -15,7 +15,7 @@ driver = webdriver.Firefox(options=options)
 
 # get root
 root = link.split(".")
-root[1] = root[1].split("/")[0]
+root[-1] = root[-1].split("/")[0]
 root = ".".join(root)
 
 driver.get(root)
