@@ -2,11 +2,11 @@
 
 # link checker - jaivin wylde - 12/03/21
 import time
+import os
 
 from selenium import webdriver
 
-# link = input("link: ")
-link = "https://discordgift.site/ALlJL9NjcwQdXJ9n"
+link = input("link: ")
 
 options = webdriver.FirefoxOptions()
 options.headless = True
@@ -36,4 +36,11 @@ if driver.current_url != link:
     print("screenshot: redirect.png")
 
 print("\ndone")
+
+input("\npress enter to close and delete screenshots: ")
+
+for file in os.listdir():
+    if file.endswith("png"):
+        os.remove(file)
+
 driver.quit()
