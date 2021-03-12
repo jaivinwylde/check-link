@@ -11,6 +11,7 @@ link = input("link (ctrl+shift+v to paste): ")
 print("\nloading...")
 
 options = webdriver.FirefoxOptions()
+options.headless = True
 driver = webdriver.Firefox(options=options)
 
 # get root
@@ -19,7 +20,6 @@ root[1] = root[1].split("/")[0]
 root = ".".join(root)
 
 driver.get(root)
-time.sleep(1)
 
 print(f"\nroot is {driver.current_url}")
 time.sleep(2)
@@ -28,16 +28,15 @@ print("screenshot: root.png")
 
 # get link
 driver.get(link)
-time.sleep(1)
 
 # check redirect
 if driver.current_url != link:
     print(f"\nredirects to {driver.current_url}")
-    time.sleep(2)
+    time.sleep(3)
     screenshot = driver.save_screenshot("redirect.png")
     print("screenshot: redirect.png")
 
 driver.quit()
 print("\ndone")
 
-print("click on 'code' tab to see screenshots")
+print("click on the 'code' tab to see screenshots")
