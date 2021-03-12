@@ -36,12 +36,7 @@ if driver.current_url != link:
     screenshot = driver.save_screenshot("redirect.png")
     print("screenshot: redirect.png")
 
+driver.quit()
 print("\ndone")
 
-input("\npress enter to close and delete screenshots: ")
-
-for file in os.listdir():
-    if file.endswith("png"):
-        os.remove(file)
-
-driver.quit()
+input("click on 'code' tab to see screenshots")
