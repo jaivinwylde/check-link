@@ -26,7 +26,8 @@ All requests are run through an anonymous proxy so your IP address is safe.
 ```python
 # Get proxy
 collector = proxyscrape.create_collector("main", "https")
-proxy = collector.get_proxy({"anonymous": True})
+proxy = collector.get_proxy(
+    {"code": ["us", "ca"], "type": "https", "anonymous": True})
 
 # Initialize pyppeteer
 browser = await pyppeteer.launch(
