@@ -1,18 +1,31 @@
 #!/usr/bin/env python3
 
 # Link checker - Jaivin Wylde - 12/03/21
+import proxyscrape
 import asyncio
-
-from pyppeteer import launch
+import pyppeteer
 
 
 async def main():
     # Get link
-    link = input("link (ctrl+shift+v to paste): ")
+    link = input("Link: ")
+    print("\nLoading...")
 
-    browser = await launch()
+    # Get proxy
+    print("\nGetting proxy")
+    collector = proxyscrape.create_collector("main", "https")
+    proxy = collector.get_proxy(
+        {"code": ["us", "ca"], "type": "https", "anonymous": True})
+    print(f"Using {proxy.host} from {proxy.country}")
+
+    # Initialize pyppeteer
+    print("\nLaunching browser")
+    browser = await pyppeteer.launch(
+        ignoreHTTPSErrors=True,
+        args=[f"--proxy-server={proxy.host}:{proxy.port}"])
 
     page = await browser.newPage()
+    await page.setUserAgent("gaming browser")
     await page.setViewport({
         "width": 1920,
         "height": 1080
@@ -23,23 +36,23 @@ async def main():
     root[-1] = root[-1].split("/")[0]
     root_url = ".".join(root)
 
-    await page.goto(root_url, waitUntil="networkidle0")
-    print(f"\nroot is {page.url}")
+    print("\nRequesting root")
+    await page.goto(root_url, waitUntil="networkidle2", timeout=0)
+    print(f"Root is {page.url}")
     await page.screenshot(path="root.png")
-    print("screenshot: root.png")
+    print("Screenshot: root.png")
 
     # Get link
-    await page.goto(link, waitUntil="networkidle0")
+    print("\nRequesting link")
+    await page.goto(link, waitUntil="networkidle2", timeout=0)
 
     if page.url != link:
-        print(f"\nredirects to {page.url}")
+        print(f"\nRedirects to {page.url}")
         await page.screenshot(path="redirect.png")
-        print("screenshot: redirect.png")
+        print("Screenshot: redirect.png")
 
     await browser.close()
 
-    print("\ndone")
-
-    print("click on the 'code' tab to see screenshots")
+    print("\nDone")
 
 asyncio.get_event_loop().run_until_complete(main())
