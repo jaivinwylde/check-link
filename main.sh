@@ -1,6 +1,6 @@
 echo INSTALLING DEPENDENCIES
 echo 
-pip3 install selenium
+pip3 install pyppeteer
 echo
 
 ./main.py

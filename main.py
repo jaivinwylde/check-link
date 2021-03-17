@@ -1,42 +1,45 @@
 #!/usr/bin/env python3
 
-# link checker - jaivin wylde - 12/03/21
-import time
+# Link checker - Jaivin Wylde - 12/03/21
+import asyncio
 
-from selenium import webdriver
+from pyppeteer import launch
 
-link = input("link (ctrl+shift+v to paste): ")
 
-print("\nloading...")
+async def main():
+    # Get link
+    link = input("link (ctrl+shift+v to paste): ")
 
-options = webdriver.FirefoxOptions()
-options.headless = True
-driver = webdriver.Firefox(options=options)
+    browser = await launch()
 
-# get root
-root = link.split(".")
-root[-1] = root[-1].split("/")[0]
-root_url = ".".join(root)
+    page = await browser.newPage()
+    await page.setViewport({
+        "width": 1920,
+        "height": 1080
+    })
 
-driver.get(root_url)
+    # Get root
+    root = link.split(".")
+    root[-1] = root[-1].split("/")[0]
+    root_url = ".".join(root)
 
-print(f"\nroot is {driver.current_url}")
-time.sleep(2)
-screenshot = driver.save_screenshot("root.png")
-print("screenshot: root.png")
+    await page.goto(root_url, waitUntil="networkidle0")
+    print(f"\nroot is {page.url}")
+    await page.screenshot(path="root.png")
+    print("screenshot: root.png")
 
-# get link
-driver.get(link)
-time.sleep(1)
+    # Get link
+    await page.goto(link, waitUntil="networkidle0")
 
-# check redirect
-if driver.current_url != link:
-    print(f"\nredirects to {driver.current_url}")
-    time.sleep(3)
-    screenshot = driver.save_screenshot("redirect.png")
-    print("screenshot: redirect.png")
+    if page.url != link:
+        print(f"\nredirects to {page.url}")
+        await page.screenshot(path="redirect.png")
+        print("screenshot: redirect.png")
 
-driver.quit()
-print("\ndone")
+    await browser.close()
 
-print("click on the 'code' tab to see screenshots")
+    print("\ndone")
+
+    print("click on the 'code' tab to see screenshots")
+
+asyncio.get_event_loop().run_until_complete(main())
