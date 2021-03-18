@@ -64,10 +64,10 @@ class LinkChecker:
         least 500 milliseconds (this means the site will be 99% loaded, but it
         won't stall on a small thing that's taking forever), or until a timeout
         exception has been raised. If the request fails, it will try again, and
-        it will keep trying until it has tried more than it's allowed to with
-        the same proxy. If it reaches that limit, it will blacklist the current
-        proxy, get a new one, and relaunch the browser. It will continue doing
-        this until a successful request has been returned.
+        it will keep trying until it has tried more times than it's allowed to
+        with the same proxy. If it reaches that limit, it will blacklist the
+        current proxy, get a new one, and relaunch the browser. It will
+        continue doing this until a successful request has been returned.
         """
         tries = 0
 
