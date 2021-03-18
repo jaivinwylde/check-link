@@ -6,16 +6,16 @@ safely checking shady links.
 
 ## What it finds
 
-### The root of the site
+### The root of the URL
 ![root example](images/root_example.png)
 
-It will follow where the root of the site takes it. It ended up here in this
-example, and this is the screenshot it took:
+It will follow where the root of the URL takes it. It ended up at
+`https://grabify.link` in this example, and this is the screenshot it took:
 ![root destination](images/root_destination.png)
 
 ### The redirect
-It will follow where the main link takes it. It ended up here in this example,
-and this is the screenshot it took:
+It will follow where the main link takes it. It ended up at
+`https://google.com` in this example, and this is the screenshot it took:
 ![redirect destination](images/redirect_destination.png)
 
 ---
