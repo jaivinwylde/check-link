@@ -27,7 +27,6 @@ All requests are run through an anonymous proxy so your IP address is safe.
 # Get proxy
 collector = proxyscrape.create_collector("main", "https")
 proxy = collector.get_proxy({
-    "code": "us",
     "type": "https",
     "anonymous": True
 })
