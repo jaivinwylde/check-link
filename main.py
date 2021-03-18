@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 # Link checker - Jaivin Wylde - 12/03/21
+import sys
 import proxyscrape
 import asyncio
 import pyppeteer
@@ -14,6 +15,7 @@ async def main():
     # Get proxy
     print("\nGetting proxy")
     collector = proxyscrape.create_collector("main", "https")
+
     proxy = collector.get_proxy({
         "code": "us",
         "type": "https",
@@ -58,4 +60,11 @@ async def main():
 
     print("\nDone")
 
-asyncio.get_event_loop().run_until_complete(main())
+if __name__ == "__main__":
+    loop = asyncio.get_event_loop()
+
+    try:
+        loop.run_until_complete(main())
+
+    except KeyboardInterrupt:
+        sys.exit()
