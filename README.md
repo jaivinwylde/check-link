@@ -1,5 +1,6 @@
 # Check link
-Safely investigates a link and takes screenshots of everything it finds. Good for checking shady links.
+Safely investigates a link and takes screenshots of everything it finds. Good
+for checking shady links.
 
 ---
 
