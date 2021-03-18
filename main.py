@@ -38,8 +38,9 @@ class LinkChecker:
         print(f"Using {self.proxy.host} from {self.proxy.country}")
 
     async def launch_browser(self):
-        """Launch a pyppeteer browser that uses the new proxy we just got, then
-        take control of the current page and give it our desired settings.
+        """Get a new proxy and launch a pyppeteer browser that uses that new
+        proxy, then take control of the current page and give it our desired
+        settings.
         """
         # Get new proxy
         self.get_proxy()
