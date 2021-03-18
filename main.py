@@ -13,9 +13,6 @@ class LinkChecker:
         self.proxy_tries = 3
         self.timeout = 5
 
-        print("\nGetting proxy")
-        self.get_proxy()
-
     def __await__(self):
         """Define async code that gets run when the class is initialized
         (awaited). We need to do it in this __await__ method because we can't
@@ -41,9 +38,12 @@ class LinkChecker:
         print(f"Using {self.proxy.host} from {self.proxy.country}")
 
     async def launch_browser(self):
-        """Launch a new pyppeteer browser that uses our current proxy, then
+        """Launch a pyppeteer browser that uses the new proxy we just got, then
         take control of the current page and give it our desired settings.
         """
+        # Get new proxy
+        self.get_proxy()
+
         # Launch browser with proxy
         self.browser = await pyppeteer.launch(
             ignoreHTTPSErrors=True,
@@ -89,10 +89,7 @@ class LinkChecker:
                     # Blacklist current proxy
                     self.collector.blacklist_proxy(self.proxy)
 
-                    # Get new proxy
-                    self.get_proxy()
-
-                    # Relaunch browser
+                    # Relaunch browser with new proxy
                     await self.browser.close()
                     await self.launch_browser()
 
