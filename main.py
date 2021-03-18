@@ -60,15 +60,16 @@ class LinkChecker:
         })
 
     async def get(self, url):
-        """A wrapper around pyppeteer's goto url method. When making a request,
-        it waits until there's been no more than 2 network connections for at
-        least 500 milliseconds (this means the site will be 99% loaded, but it
-        won't stall on a small thing that's taking forever), or until a timeout
-        exception has been raised. If the request fails, it will try again, and
-        it will keep trying until it has tried more times than it's allowed to
-        with the same proxy. If it reaches that limit, it will blacklist the
-        current proxy, get a new one, and relaunch the browser. It will
-        continue doing this until a successful request has been returned.
+        """A wrapper around pyppeteer's goto url method. To finish a request,
+        it has to wait until there's been no more than 2 network connections
+        for at least 500 milliseconds (this means the site will be 99% loaded,
+        but it won't stall on a small thing that's taking forever), or until a
+        timeout exception has been raised. If the request fails, it will try
+        again, and it will keep trying until it has tried more times than it's
+        allowed to with the same proxy. If it reaches that limit, it will
+        blacklist the current proxy, get a new one, relaunch the browser, and
+        start making more requests. It will continue doing this until a
+        successful request has been returned.
         """
         tries = 0
 
