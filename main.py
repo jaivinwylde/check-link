@@ -7,56 +7,142 @@ import asyncio
 import pyppeteer
 
 
+class LinkChecker:
+    def __init__(self):
+        self.collector = proxyscrape.create_collector("main", "https")
+        self.proxy_tries = 3
+        self.timeout = 5
+
+        print("\nGetting proxy")
+        self.get_proxy()
+
+    def __await__(self):
+        """Define async code that gets run when the class is initialized
+        (awaited). We need to do it in this __await__ method because we can't
+        await anything in __init__.
+        """
+        async def init():
+            print("\nLaunching browser")
+            await self.launch_browser()
+
+            return self
+
+        return init().__await__()
+
+    def get_proxy(self):
+        """Get a new anonymous HTTPS proxy from our proxy collector
+        (proxyscrape).
+        """
+        self.proxy = self.collector.get_proxy({
+            "type": "https",
+            "anonymous": True
+        })
+
+        print(f"Using {self.proxy.host} from {self.proxy.country}")
+
+    async def launch_browser(self):
+        """Launch a new pyppeteer browser that uses our current proxy, then
+        take control of the current page and give it our desired settings.
+        """
+        # Launch browser with proxy
+        self.browser = await pyppeteer.launch(
+            ignoreHTTPSErrors=True,
+            args=[f"--proxy-server={self.proxy.host}:{self.proxy.port}"])
+
+        # Setup current page
+        self.page = await self.browser.pages()
+        self.page = self.page[0]
+        await self.page.setUserAgent("gaming browser")
+        await self.page.setViewport({
+            "width": 1920,
+            "height": 1080
+        })
+
+    async def get(self, url):
+        """A wrapper around pyppeteer's goto url method. When making a request,
+        it waits until there's been no more than 2 network connections for at
+        least 500 milliseconds (this means the site will be 99% loaded, but it
+        won't stall on a small thing that's taking forever), or until a timeout
+        exception has been raised. If the request fails, it will try again, and
+        it will keep trying until it has tried more than it's allowed to with
+        the same proxy. If it reaches that limit, it will blacklist the current
+        proxy, get a new one, and relaunch the browser. It will continue doing
+        this until a successful request has been returned.
+        """
+        tries = 0
+
+        while True:
+            try:
+                # Make request
+                response = await asyncio.wait_for(
+                    self.page.goto(url, waitUntil="networkidle2"),
+                    self.timeout)
+
+                return response
+
+            except Exception:
+                tries += 1
+
+                if tries > self.proxy_tries:
+                    print("Request failed, trying again with a new proxy")
+
+                    # Blacklist current proxy
+                    self.collector.blacklist_proxy(self.proxy)
+
+                    # Get new proxy
+                    self.get_proxy()
+
+                    # Relaunch browser
+                    await self.browser.close()
+                    await self.launch_browser()
+
+                    tries = 0
+
+                else:
+                    print("Request failed, trying again")
+
+
 async def main():
     # Get link
     link = input("Link: ")
+
+    if link.endswith("/"):
+        link = link[:-1]
+
     print("\nLoading...")
 
-    # Get proxy
-    print("\nGetting proxy")
-    collector = proxyscrape.create_collector("main", "https")
+    checker = await LinkChecker()
 
-    proxy = collector.get_proxy({
-        "code": "us",
-        "type": "https",
-        "anonymous": True
-    })
-    print(f"Using {proxy.host} from {proxy.country}")
-
-    # Initialize pyppeteer
-    print("\nLaunching browser")
-    browser = await pyppeteer.launch(
-        ignoreHTTPSErrors=True,
-        args=[f"--proxy-server={proxy.host}:{proxy.port}"])
-
-    page = await browser.newPage()
-    await page.setUserAgent("gaming browser")
-    await page.setViewport({
-        "width": 1920,
-        "height": 1080
-    })
-
-    # Get root
+    # Find root
     root = link.split(".")
     root[-1] = root[-1].split("/")[0]
     root_url = ".".join(root)
 
+    # Get root
     print("\nRequesting root")
-    await page.goto(root_url, waitUntil="networkidle2", timeout=0)
-    print(f"Root is {page.url}")
-    await page.screenshot(path="root.png")
+    await checker.get(root_url)
+    print(f"Root is {checker.page.url}")
+
+    await checker.page.screenshot(path="root.png")
     print("Screenshot: root.png")
 
     # Get link
-    print("\nRequesting link")
-    await page.goto(link, waitUntil="networkidle2", timeout=0)
 
-    if page.url != link:
-        print(f"Redirects to {page.url}")
-        await page.screenshot(path="redirect.png")
-        print("Screenshot: redirect.png")
+    # Check if the link is more than its root
+    if len(link.split("/")) > 3:
+        print("\nRequesting link")
+        await checker.get(link)
 
-    await browser.close()
+        if checker.page.url != link:
+            print(f"Redirects to {checker.page.url}")
+
+        else:
+            print("Does not redirect")
+
+        await checker.page.screenshot(path="main.png")
+        print("Screenshot: main.png")
+
+    await checker.browser.close()
 
     print("\nDone")
 
