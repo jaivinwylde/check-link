@@ -52,7 +52,7 @@ async def main():
     await page.goto(link, waitUntil="networkidle2", timeout=0)
 
     if page.url != link:
-        print(f"\nRedirects to {page.url}")
+        print(f"Redirects to {page.url}")
         await page.screenshot(path="redirect.png")
         print("Screenshot: redirect.png")
 
