@@ -14,8 +14,11 @@ async def main():
     # Get proxy
     print("\nGetting proxy")
     collector = proxyscrape.create_collector("main", "https")
-    proxy = collector.get_proxy(
-        {"code": "us", "type": "https", "anonymous": True})
+    proxy = collector.get_proxy({
+        "code": "us",
+        "type": "https",
+        "anonymous": True
+    })
     print(f"Using {proxy.host} from {proxy.country}")
 
     # Initialize pyppeteer
