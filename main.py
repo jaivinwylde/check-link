@@ -11,7 +11,7 @@ class LinkChecker:
     def __init__(self):
         self.collector = proxyscrape.create_collector("main", "https")
         self.proxy_tries = 3
-        self.timeout = 5
+        self.timeout = 8
 
     def __await__(self):
         """Define async code that gets run when the class is initialized
@@ -137,8 +137,8 @@ async def main():
         else:
             print("Does not redirect")
 
-        await checker.page.screenshot(path="main.png")
-        print("Screenshot: main.png")
+        await checker.page.screenshot(path="link.png")
+        print("Screenshot: link.png")
 
     await checker.browser.close()
 
