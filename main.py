@@ -15,7 +15,9 @@ class LinkChecker:
 
     def __await__(self):
         """Define async code that gets run when the class is initialized
-        (awaited). We need to do it in this __await__ method because we can't
+        (awaited).
+
+        We need to do it in this __await__ method because we can't
         await anything in __init__.
         """
         async def init():
@@ -27,9 +29,7 @@ class LinkChecker:
         return init().__await__()
 
     def get_proxy(self):
-        """Get a new anonymous HTTPS proxy from our proxy collector
-        (proxyscrape).
-        """
+        """Get a new anonymous HTTPS proxy from our proxy collector."""
         self.proxy = self.collector.get_proxy({
             "type": "https",
             "anonymous": True
@@ -38,7 +38,9 @@ class LinkChecker:
         print(f"Using {self.proxy.host} from {self.proxy.country}")
 
     async def launch_browser(self):
-        """Get a new proxy and launch a pyppeteer browser that uses that new
+        """Initialize a new pyppeteer browser with the appropriate settings.
+
+        Get a new proxy and launch a pyppeteer browser that uses that new
         proxy, then take control of the current page and give it our desired
         settings.
         """
@@ -60,14 +62,16 @@ class LinkChecker:
         })
 
     async def get(self, url):
-        """A wrapper around pyppeteer's goto url method. To finish a request,
-        it has to wait until there's been no more than 2 network connections
-        for at least 500 milliseconds. If the request fails (from a timeout or
-        pyppeteer error), it will try again, and it will keep trying until it
-        has tried more times than it's allowed to with the same proxy. If it
-        reaches that limit, it will blacklist the current proxy, get a new one,
-        relaunch the browser, and start making more requests. It will continue
-        doing this until a successful request has been returned.
+        """A wrapper around pyppeteer's goto url method.
+
+        To finish a request, it has to wait until there's been no more than 2
+        network connections for at least 500 milliseconds. If the request fails
+        (from a timeout or pyppeteer error), it will try again, and it will
+        keep trying until it has tried more times than it's allowed to with the
+        same proxy. If it reaches that limit, it will blacklist the current
+        proxy, get a new one, relaunch the browser, and start making more
+        requests. It will continue doing this until a successful request has
+        been returned.
         """
         tries = 0
 
