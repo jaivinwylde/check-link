@@ -56,10 +56,7 @@ class LinkChecker:
         self.page = await self.browser.pages()
         self.page = self.page[0]
         await self.page.setUserAgent("gaming browser")
-        await self.page.setViewport({
-            "width": 1920,
-            "height": 1080
-        })
+        await self.page.setViewport({"width": 1920, "height": 1080})
 
     async def get(self, url):
         """A wrapper around pyppeteer's goto url method.
@@ -80,8 +77,7 @@ class LinkChecker:
                 # Make request
                 response = await asyncio.wait_for(
                     self.page.goto(url, waitUntil="networkidle2"),
-                    self.timeout
-                )
+                    self.timeout)
 
                 return response
 
@@ -147,6 +143,7 @@ async def main():
     await checker.browser.close()
 
     print("\nDone")
+
 
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
